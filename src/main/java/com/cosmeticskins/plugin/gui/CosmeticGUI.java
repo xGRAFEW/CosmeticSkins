@@ -1,6 +1,7 @@
 package com.cosmeticskins.plugin.gui;
 
 import com.cosmeticskins.plugin.CosmeticSkins;
+import com.cosmeticskins.plugin.model.SkinCategory;
 import com.cosmeticskins.plugin.model.SkinDefinition;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,14 +16,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A single-row equip menu. Each of the middle slots accepts a skin token;
- * everything else is a locked decorative border.
- *
- * Layout for equip-slots = 9 (fills the whole row):
- *   [0][1][2][3][4][5][6][7][8]   <- all equip slots
- *
- * Layout for equip-slots = 5 (border padding either side):
- *   [x][0][1][2][3][4][x][x][x]
+ * A multi-row equip menu, laid out entirely from config.yml's "categories"
+ * section (see {@link com.cosmeticskins.plugin.manager.CategoryManager}).
+ * Each configured category owns exactly one raw slot and only accepts skin
+ * tokens tagged with that category's id; every other slot is decorative
+ * border. The inventory grows automatically to fit whatever slot indices
+ * the configured categories use, up to a full double chest (54 slots).
  */
 public class CosmeticGUI implements InventoryHolder {
 
@@ -37,33 +36,41 @@ public class CosmeticGUI implements InventoryHolder {
     }
 
     private void build() {
-        int size = 9; // single row
+        Map<Integer, SkinCategory> slots = plugin.getCategoryManager().slotMap();
+
+        int maxSlot = 8;
+        for (int slot : slots.keySet()) {
+            maxSlot = Math.max(maxSlot, slot);
+        }
+        int size = Math.min(54, ((maxSlot / 9) + 1) * 9);
+
         inventory = plugin.getServer().createInventory(this, size, plugin.getMainConfig().guiTitle());
         refresh();
     }
 
+    /** The category bound to this raw slot, or null if it's decorative border. */
+    public SkinCategory categoryAt(int rawSlot) {
+        return plugin.getCategoryManager().slotMap().get(rawSlot);
+    }
+
     /** Which raw slot indices are usable equip slots (rest is decorative border). */
     public boolean isEquipSlot(int rawSlot) {
-        int equipCount = plugin.getMainConfig().equipSlots();
-        int start = (9 - equipCount) / 2;
-        return rawSlot >= start && rawSlot < start + equipCount;
+        return categoryAt(rawSlot) != null;
     }
 
     public void refresh() {
-        int equipCount = plugin.getMainConfig().equipSlots();
-        int start = (9 - equipCount) / 2;
-
         ItemStack border = borderItem();
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i, border);
-        }
-
+        Map<Integer, SkinCategory> slots = plugin.getCategoryManager().slotMap();
         Map<Integer, String> equipped = plugin.getPlayerDataManager().getEquipped(owner);
 
-        for (int i = 0; i < equipCount; i++) {
-            int rawSlot = start + i;
-            String skinId = equipped.get(rawSlot);
+        for (int rawSlot = 0; rawSlot < inventory.getSize(); rawSlot++) {
+            SkinCategory category = slots.get(rawSlot);
+            if (category == null) {
+                inventory.setItem(rawSlot, border);
+                continue;
+            }
 
+            String skinId = equipped.get(rawSlot);
             if (skinId != null) {
                 SkinDefinition skin = plugin.getSkinManager().get(skinId);
                 if (skin != null) {
@@ -71,7 +78,7 @@ public class CosmeticGUI implements InventoryHolder {
                     continue;
                 }
             }
-            inventory.setItem(rawSlot, emptySlotItem());
+            inventory.setItem(rawSlot, emptySlotItem(category));
         }
     }
 
@@ -83,11 +90,12 @@ public class CosmeticGUI implements InventoryHolder {
         return item;
     }
 
-    private ItemStack emptySlotItem() {
-        ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+    private ItemStack emptySlotItem(SkinCategory category) {
+        String name = ChatColor.stripColor(category.getDisplayName());
+        ItemStack item = new ItemStack(category.getIcon());
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "Empty Skin Slot");
-        meta.setLore(List.of(ChatColor.GRAY + "Drop a skin token here to equip it."));
+        meta.setDisplayName(ChatColor.GREEN + "Empty " + name + " Slot");
+        meta.setLore(List.of(ChatColor.GRAY + "Drop a " + name + " skin token here to equip it."));
         item.setItemMeta(meta);
         return item;
     }

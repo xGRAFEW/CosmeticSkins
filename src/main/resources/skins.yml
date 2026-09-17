@@ -3,9 +3,13 @@
 # id:                 unique internal id, used by /cosmetic give
 # display-name:       shown on the token item and in the GUI (color codes with &)
 # custom-model-data:  the number your resource pack's item model predicate matches on
+# category:           which GUI slot (defined in config.yml's "categories"
+#                      section) this skin's token can be dropped into, e.g.
+#                      helmet, chestplate, leggings, boots, sword, pickaxe,
+#                      axe, shovel, or any custom category you've added
 # allowed-materials:  which item types this skin can be applied to. The token can
-#                      only be dropped into a slot, and will only re-skin items,
-#                      matching one of these materials.
+#                      only be dropped into its category's slot, and will only
+#                      re-skin items matching one of these materials.
 # token-icon:          (optional) override the base material for this token's icon
 #                      instead of the global token-material in config.yml
 
@@ -13,6 +17,7 @@ skins:
   starwar_shovel:
     display-name: "&bStarwar Shovel Skin"
     custom-model-data: 100001
+    category: shovel
     allowed-materials:
       - WOODEN_SHOVEL
       - STONE_SHOVEL
@@ -24,6 +29,7 @@ skins:
   flame_sword:
     display-name: "&cFlame Sword Skin"
     custom-model-data: 100002
+    category: sword
     allowed-materials:
       - WOODEN_SWORD
       - STONE_SWORD

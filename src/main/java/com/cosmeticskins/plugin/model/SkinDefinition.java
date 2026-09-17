@@ -14,14 +14,16 @@ public class SkinDefinition {
     private final int customModelData;
     private final Set<Material> allowedMaterials;
     private final Material tokenIcon;
+    private final String category;
 
     public SkinDefinition(String id, String displayName, int customModelData,
-                           Set<Material> allowedMaterials, Material tokenIcon) {
+                           Set<Material> allowedMaterials, Material tokenIcon, String category) {
         this.id = id;
         this.displayName = displayName;
         this.customModelData = customModelData;
         this.allowedMaterials = allowedMaterials;
         this.tokenIcon = tokenIcon;
+        this.category = category;
     }
 
     public String getId() {
@@ -42,6 +44,11 @@ public class SkinDefinition {
 
     public Material getTokenIcon() {
         return tokenIcon;
+    }
+
+    /** Id of the GUI category (see {@link com.cosmeticskins.plugin.model.SkinCategory}) this skin's token belongs in. */
+    public String getCategory() {
+        return category;
     }
 
     public boolean supports(Material material) {

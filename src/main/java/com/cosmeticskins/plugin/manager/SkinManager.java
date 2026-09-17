@@ -61,6 +61,13 @@ public class SkinManager {
                     skinSection.getString("display-name", id));
             int customModelData = skinSection.getInt("custom-model-data", 0);
 
+            String category = skinSection.getString("category");
+            if (category == null || plugin.getCategoryManager().get(category) == null) {
+                plugin.getLogger().warning("Skin '" + id + "' has a missing or unknown 'category' ('"
+                        + category + "') — skipping. Add a matching entry under config.yml's 'categories' section.");
+                continue;
+            }
+
             List<String> materialNames = skinSection.getStringList("allowed-materials");
             Set<Material> materials = EnumSet.noneOf(Material.class);
             for (String name : materialNames) {
@@ -86,7 +93,7 @@ public class SkinManager {
                 tokenIcon = plugin.getMainConfig().tokenMaterial();
             }
 
-            skins.put(id, new SkinDefinition(id, displayName, customModelData, materials, tokenIcon));
+            skins.put(id, new SkinDefinition(id, displayName, customModelData, materials, tokenIcon, category));
         }
 
         plugin.getLogger().info("Loaded " + skins.size() + " cosmetic skin(s).");

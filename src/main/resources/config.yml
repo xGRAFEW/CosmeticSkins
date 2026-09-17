@@ -2,8 +2,58 @@
 
 gui:
   title: "&5&lCosmetic Skins"
-  # Number of equip slots shown in the menu (max 9, single row)
-  equip-slots: 9
+
+# Every entry here becomes one dedicated slot in the /cosmetic GUI. Only skin
+# tokens whose "category" (set in skins.yml) matches a category's id can be
+# dropped into that category's slot — so armor tokens can't land in a tool
+# slot and vice versa.
+#
+# id (the map key):    unique internal category id, referenced by skins.yml's
+#                       "category" field
+# display-name:        shown in the empty-slot item and in messages (color
+#                       codes with &)
+# slot:                raw inventory slot index (0-53) this category occupies.
+#                       0-8 is row 1, 9-17 is row 2, and so on; the GUI grows
+#                       to however many rows your highest slot needs, up to a
+#                       full double chest (54 slots).
+# icon:                material shown on the empty-slot placeholder
+#
+# Add, remove, rename, or reposition categories freely to redecorate the
+# menu — no code changes needed. Just make sure every skin in skins.yml has
+# a "category" that matches one of these ids.
+categories:
+  helmet:
+    display-name: "&bHelmet"
+    slot: 1
+    icon: DIAMOND_HELMET
+  chestplate:
+    display-name: "&bChestplate"
+    slot: 2
+    icon: DIAMOND_CHESTPLATE
+  leggings:
+    display-name: "&bLeggings"
+    slot: 3
+    icon: DIAMOND_LEGGINGS
+  boots:
+    display-name: "&bBoots"
+    slot: 4
+    icon: DIAMOND_BOOTS
+  sword:
+    display-name: "&cSword"
+    slot: 10
+    icon: DIAMOND_SWORD
+  pickaxe:
+    display-name: "&ePickaxe"
+    slot: 11
+    icon: DIAMOND_PICKAXE
+  axe:
+    display-name: "&6Axe"
+    slot: 12
+    icon: DIAMOND_AXE
+  shovel:
+    display-name: "&7Shovel"
+    slot: 13
+    icon: DIAMOND_SHOVEL
 
 # Material used for the base of every generated skin token (the model/texture
 # is what actually makes it look like the 3D item — this is just the base item
@@ -15,6 +65,7 @@ messages:
   skin-equipped: "&aEquipped skin &f%skin%&a!"
   skin-unequipped: "&cUnequipped skin &f%skin%&c."
   wrong-item: "&cThat token doesn't belong in this slot."
+  wrong-category: "&cThat skin token belongs in the %category%&c slot."
   no-permission: "&cYou don't have permission to do that."
   skin-not-found: "&cNo skin found with id '%id%'."
   skin-given: "&aGave %player% x%amount% of skin '%skin%'."

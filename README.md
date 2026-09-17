@@ -1,10 +1,12 @@
 # CosmeticSkins
 
-A small Paper/Purpur plugin: `/cosmetic` opens a GUI with equip slots. Drop a
-"skin token" item into a slot and every matching item you own (in hand,
-inventory, hotbar) instantly gets that skin's `CustomModelData` applied —
-enchantments, durability, name, and lore are left completely untouched.
-Take the token back out and the item reverts to normal.
+A small Paper/Purpur plugin: `/cosmetic` opens a GUI with one dedicated slot
+per item category (helmet, chestplate, leggings, boots, sword, pickaxe, axe,
+shovel by default — fully configurable, see below). Drop a "skin token" item
+into its matching slot and every matching item you own (in hand, inventory,
+hotbar) instantly gets that skin's `CustomModelData` applied — enchantments,
+durability, name, and lore are left completely untouched. Take the token
+back out and the item reverts to normal.
 
 ## Requirements
 
@@ -32,6 +34,40 @@ The finished jar will be at `target/CosmeticSkins.jar`.
    - `plugins/CosmeticSkins/skins.yml` (comes with two example skins already filled in)
    - `plugins/CosmeticSkins/playerdata/` (created automatically per player)
 
+## GUI categories
+
+`config.yml`'s `categories` section defines the layout of the `/cosmetic`
+menu — one slot per category:
+
+```yaml
+categories:
+  helmet:
+    display-name: "&bHelmet"
+    slot: 1
+    icon: DIAMOND_HELMET
+  pickaxe:
+    display-name: "&ePickaxe"
+    slot: 11
+    icon: DIAMOND_PICKAXE
+```
+
+- `slot` is the raw inventory slot index (0-53). 0-8 is row 1, 9-17 is row 2,
+  and so on — the menu automatically grows to however many rows your highest
+  configured slot needs, up to a full double chest.
+- `icon` is just the placeholder shown on an empty slot; it doesn't restrict
+  anything by itself.
+- Every slot only accepts skin tokens whose `category` (see below) matches
+  that category's id — drop a sword skin on the pickaxe slot and it's
+  rejected.
+- **Add your own categories freely** (a `hoe` category, a second `sword2`
+  slot, a purely decorative rename, whatever) — just pick a unique id, a
+  free slot, and give matching skins that same `category` id in `skins.yml`.
+  No code changes needed. Run `/cosmetic reload` afterwards.
+
+The default layout ships 8 categories: `helmet`, `chestplate`, `leggings`,
+`boots` on row 1, and `sword`, `pickaxe`, `axe`, `shovel` on row 2, with the
+rest of the grid filled by decorative border panes.
+
 ## Defining a skin
 
 Edit `skins.yml`:
@@ -41,6 +77,7 @@ skins:
   starwar_shovel:
     display-name: "&bStarwar Shovel Skin"
     custom-model-data: 100001
+    category: shovel
     allowed-materials:
       - WOODEN_SHOVEL
       - STONE_SHOVEL
@@ -53,6 +90,9 @@ skins:
 - `custom-model-data` is just a number — it means nothing on its own. Your
   **resource pack** is what maps that number to an actual 3D model/texture
   (see below).
+- `category` must match one of the ids under `config.yml`'s `categories`
+  section — it's what slot this skin's token can be dropped into. A skin
+  with an unknown or missing category is skipped on load (check the log).
 - `allowed-materials` limits which item types this skin can attach to (and
   which items in a player's inventory get scanned/reskinned). Group every
   tier of the same tool (wood → netherite) together if you want one skin to
@@ -74,10 +114,12 @@ item once with this command and duplicate it in your shop's config).
 
 ## Player flow
 
-1. Player runs `/cosmetic` → opens a single-row GUI.
-2. Player drags a skin token from their inventory onto an empty (lime pane)
+1. Player runs `/cosmetic` → opens the category GUI (helmet, chestplate,
+   leggings, boots, sword, pickaxe, axe, shovel by default).
+2. Player drags a skin token from their inventory onto that skin's category
    slot → token is consumed, skin is equipped, and every matching item they
-   own reskins immediately.
+   own reskins immediately. Dropping it on the wrong category's slot is
+   rejected with a message instead.
 3. Player clicks a filled slot with an empty cursor → the token comes back
    out, and every item that had that skin reverts to normal.
 
@@ -114,11 +156,11 @@ all, it just sets the same tag.
 ## Notes / next steps
 
 This is a working base you can extend:
-- Currently one skin can be equipped per GUI slot; slots don't restrict *which*
-  category goes where, so two equipped skins with overlapping
-  `allowed-materials` will both try to reskin the same item (last one applied
-  wins). If you want strict "1 slot = 1 tool category" behavior, tag each
-  slot with an allowed category in config and validate on placement.
+- Each GUI slot is now bound to a category and only accepts matching skin
+  tokens (see "GUI categories" above). Two skins in *different* categories
+  can still both match the same material if you deliberately configure their
+  `allowed-materials` to overlap (e.g. two "sword" skins) — normal "last
+  equipped wins" behavior applies there, same as before.
 - No economy/shop hook is included — wire `/cosmetic give` into whatever
   shop or crate plugin you use to actually sell the tokens.
 - Built and smoke-tested end-to-end on a real Purpur 26.3 server (build 2635):

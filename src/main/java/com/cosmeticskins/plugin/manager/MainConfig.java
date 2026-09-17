@@ -21,11 +21,6 @@ public class MainConfig {
         return ChatColor.translateAlternateColorCodes('&', cfg().getString("gui.title", "&5&lCosmetic Skins"));
     }
 
-    public int equipSlots() {
-        int slots = cfg().getInt("gui.equip-slots", 9);
-        return Math.max(1, Math.min(9, slots));
-    }
-
     public Material tokenMaterial() {
         Material material = Material.matchMaterial(cfg().getString("token-material", "PAPER"));
         return material != null ? material : Material.PAPER;

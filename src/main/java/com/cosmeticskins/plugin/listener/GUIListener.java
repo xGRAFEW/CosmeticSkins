@@ -3,6 +3,7 @@ package com.cosmeticskins.plugin.listener;
 import com.cosmeticskins.plugin.CosmeticSkins;
 import com.cosmeticskins.plugin.gui.CosmeticGUI;
 import com.cosmeticskins.plugin.manager.SkinManager;
+import com.cosmeticskins.plugin.model.SkinCategory;
 import com.cosmeticskins.plugin.model.SkinDefinition;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -84,6 +85,13 @@ public class GUIListener implements Listener {
             if (skin == null) {
                 player.sendMessage(plugin.getMainConfig().message("skin-not-found")
                         .replace("%id%", tokenSkinId));
+                return;
+            }
+
+            SkinCategory slotCategory = gui.categoryAt(rawSlot);
+            if (!skin.getCategory().equals(slotCategory.getId())) {
+                player.sendMessage(plugin.getMainConfig().message("wrong-category")
+                        .replace("%category%", slotCategory.getDisplayName()));
                 return;
             }
 
