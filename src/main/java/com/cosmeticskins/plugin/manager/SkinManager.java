@@ -32,10 +32,13 @@ public class SkinManager {
     public final NamespacedKey keySkinId;      // tag on a TOKEN item: which skin it grants
     public final NamespacedKey keyAppliedSkin; // tag on a TOOL item: which skin is currently applied to it
 
+    // Namespace is a fixed literal, not derived from plugin.getName(), so PDC tags on
+    // items players have already reskinned keep resolving even if the plugin's display
+    // name in plugin.yml changes (e.g. gains a version suffix) across releases.
     public SkinManager(CosmeticSkins plugin) {
         this.plugin = plugin;
-        this.keySkinId = new NamespacedKey(plugin, "skin_token_id");
-        this.keyAppliedSkin = new NamespacedKey(plugin, "applied_skin_id");
+        this.keySkinId = new NamespacedKey("cosmeticskins", "skin_token_id");
+        this.keyAppliedSkin = new NamespacedKey("cosmeticskins", "applied_skin_id");
     }
 
     public void loadSkins() {

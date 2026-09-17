@@ -1,4 +1,4 @@
-name: CosmeticSkins
+name: 'CosmeticSkins-v${project.version}'
 version: '${project.version}'
 main: com.cosmeticskins.plugin.CosmeticSkins
 api-version: '1.21'
