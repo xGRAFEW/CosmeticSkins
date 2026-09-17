@@ -1,0 +1,33 @@
+# Define every skin here.
+#
+# id:                 unique internal id, used by /cosmetic give
+# display-name:       shown on the token item and in the GUI (color codes with &)
+# custom-model-data:  the number your resource pack's item model predicate matches on
+# allowed-materials:  which item types this skin can be applied to. The token can
+#                      only be dropped into a slot, and will only re-skin items,
+#                      matching one of these materials.
+# token-icon:          (optional) override the base material for this token's icon
+#                      instead of the global token-material in config.yml
+
+skins:
+  starwar_shovel:
+    display-name: "&bStarwar Shovel Skin"
+    custom-model-data: 100001
+    allowed-materials:
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - DIAMOND_SHOVEL
+      - NETHERITE_SHOVEL
+
+  flame_sword:
+    display-name: "&cFlame Sword Skin"
+    custom-model-data: 100002
+    allowed-materials:
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - DIAMOND_SWORD
+      - NETHERITE_SWORD

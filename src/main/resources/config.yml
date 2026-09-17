@@ -1,0 +1,22 @@
+# CosmeticSkins configuration
+
+gui:
+  title: "&5&lCosmetic Skins"
+  # Number of equip slots shown in the menu (max 9, single row)
+  equip-slots: 9
+
+# Material used for the base of every generated skin token (the model/texture
+# is what actually makes it look like the 3D item — this is just the base item
+# custom model data attaches to)
+token-material: PAPER
+
+messages:
+  prefix: "&8[&5CosmeticSkins&8] &r"
+  skin-equipped: "&aEquipped skin &f%skin%&a!"
+  skin-unequipped: "&cUnequipped skin &f%skin%&c."
+  wrong-item: "&cThat token doesn't belong in this slot."
+  no-permission: "&cYou don't have permission to do that."
+  skin-not-found: "&cNo skin found with id '%id%'."
+  skin-given: "&aGave %player% x%amount% of skin '%skin%'."
+  reloaded: "&aCosmeticSkins config reloaded."
+  player-not-found: "&cPlayer not found."

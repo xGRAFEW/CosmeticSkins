@@ -1,0 +1,25 @@
+name: CosmeticSkins
+version: '${project.version}'
+main: com.cosmeticskins.plugin.CosmeticSkins
+api-version: '1.21'
+author: YourName
+description: Drag a 3D model skin token into a slot to re-skin the matching held item, keeping its stats.
+
+commands:
+  cosmetic:
+    description: Open the cosmetic skins menu, or manage skins.
+    usage: |
+      /cosmetic - open the menu
+      /cosmetic give <player> <skinId> [amount] - give a skin token
+      /cosmetic list - list all registered skins
+      /cosmetic reload - reload skins.yml and config.yml
+    permission: cosmeticskins.use
+    permission-message: You do not have permission to use this command.
+
+permissions:
+  cosmeticskins.use:
+    description: Allows opening the cosmetic menu
+    default: true
+  cosmeticskins.admin:
+    description: Allows giving skin tokens and reloading the plugin
+    default: op
