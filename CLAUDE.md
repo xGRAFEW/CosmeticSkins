@@ -29,7 +29,11 @@ mvn clean package
   25 — the plugin's own bytecode only needs to run on the JVM, not match the
   API jar's compile version, and staying at 21 keeps it loadable on slightly
   older Paper/Purpur builds too.
-- The finished jar is `target/CosmeticSkins.jar`.
+- The finished jar is `target/CosmeticSkins-${version}.jar` (e.g.
+  `target/CosmeticSkins-1.2.2.jar`) — `finalName` in `pom.xml` embeds the
+  version so each build produces a distinct filename, making it easy to keep
+  old jars around for rollback instead of silently overwriting a generic
+  `CosmeticSkins.jar`.
 - `pom.xml`'s `<resources>` block has `filtering=true` so `${project.version}`
   in `plugin.yml` gets substituted at build time. If you ever see
   `CosmeticSkins v${project.version}` in a server's startup log, the filtering
@@ -75,10 +79,14 @@ fail to enable on the 26.3 alpha line because they use internal NMS hooks
 that haven't been updated for it yet. That's expected and unrelated to
 CosmeticSkins; only watch the `[CosmeticSkins]` log lines.
 
-To deploy a freshly built jar for testing:
+To deploy a freshly built jar for testing, remove any older `CosmeticSkins-*.jar`
+from the server's `plugins` folder first — Bukkit will try to load every jar it
+finds, and two jars registering the same plugin name causes a duplicate-plugin
+enable failure — then copy in the new versioned jar:
 ```bash
-cp "C:\Users\ACER\Desktop\Project\CosmeticSkins\target\CosmeticSkins.jar" \
-   "C:\Users\ACER\Desktop\Project\Survival SMP Purpur 26.2 test\Survival SMP Purpur 26.2 test\plugins\CosmeticSkins.jar"
+rm -f "C:\Users\ACER\Desktop\Project\Survival SMP Purpur 26.2 test\Survival SMP Purpur 26.2 test\plugins\CosmeticSkins-"*.jar
+cp "C:\Users\ACER\Desktop\Project\CosmeticSkins\target\CosmeticSkins-${version}.jar" \
+   "C:\Users\ACER\Desktop\Project\Survival SMP Purpur 26.2 test\Survival SMP Purpur 26.2 test\plugins\"
 ```
 
 To smoke-test a startup/shutdown from the CLI without a real player (checks
